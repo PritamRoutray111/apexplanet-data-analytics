@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="customer_churn.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2812"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="Customer_Churn" custom_title="0" dock_id="1" table="4,14:mainCustomer_Churn"/><dock_state state="000000ff00000000fd00000001000000020000043b000002aefc0100000001fb000000160064006f0063006b00420072006f007700730065003101000000000000043b0000012d00ffffff000002580000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Customer_Churn" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="85"/><column index="2" value="54"/><column index="3" value="79"/><column index="4" value="50"/><column index="5" value="73"/><column index="6" value="45"/><column index="7" value="82"/><column index="8" value="132"/><column index="9" value="93"/><column index="10" value="156"/><column index="11" value="156"/><column index="12" value="156"/><column index="13" value="156"/><column index="14" value="156"/><column index="15" value="156"/><column index="16" value="117"/><column index="17" value="96"/><column index="18" value="202"/><column index="19" value="97"/><column index="20" value="78"/><column index="21" value="40"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1*">-- Day 9 : SQL Basics
+
+-- Query 1
+SELECT * FROM customer_churn;
+
+-- Query 2
+SELECT customerid, gender, tenure, monthlycharges, churn
+FROM customer_churn;
+
+-- Query 3
+SELECT customerid, gender, contract, monthlycharges
+FROM customer_churn
+WHERE churn = 'Yes';
+
+-- Query 4
+SELECT customerid, monthlycharges
+FROM customer_churn
+ORDER BY monthlycharges DESC;
+
+-- Query 5
+SELECT customerid, monthlycharges
+FROM customer_churn
+ORDER BY monthlycharges DESC
+LIMIT 10;
+
+SELECT COUNT(*) AS Total_Customers
+FROM customer_churn;
+
+SELECT AVG(monthlycharges) AS Average_Monthly_Charge
+FROM customer_churn;
+
+SELECT MAX(monthlycharges) AS Highest_Monthly_Charge
+FROM customer_churn;
+
+SELECT MIN(monthlycharges) AS Lowest_Monthly_Charge
+FROM customer_churn;
+
+SELECT SUM(totalcharges) AS Total_Revenue
+FROM customer_churn;
+
+
+SELECT gender,
+COUNT(*) AS Total_Customers
+FROM customer_churn
+GROUP BY gender;
+
+SELECT contract,
+COUNT(*) AS Total_Customers
+FROM customer_churn
+GROUP BY contract;
+
+
+SELECT contract,
+AVG(monthlycharges) AS Avg_Monthly_Charge
+FROM customer_churn
+GROUP BY contract;
+
+
+SELECT churn,
+COUNT(*) AS Customers
+FROM customer_churn
+GROUP BY churn;
+
+SELECT contract,
+COUNT(*) AS Total_Customers
+FROM customer_churn
+GROUP BY contract
+HAVING COUNT(*) &gt; 1000;
+
+
+SELECT internetservice,
+AVG(monthlycharges) AS Avg_Charge
+FROM customer_churn
+GROUP BY internetservice
+HAVING AVG(monthlycharges) &gt; 50;
+
+
+SELECT customerid,
+monthlycharges
+FROM customer_churn
+WHERE monthlycharges &gt;
+(
+SELECT AVG(monthlycharges)
+FROM customer_churn
+);
+
+WITH AvgCharge AS
+(
+SELECT AVG(monthlycharges) AS avg_charge
+FROM customer_churn
+)
+
+SELECT customerid,
+monthlycharges
+FROM customer_churn,
+AvgCharge
+WHERE monthlycharges &gt; avg_charge;
+
+
+SELECT customerid,
+monthlycharges,
+ROW_NUMBER() OVER(ORDER BY monthlycharges DESC) AS Row_Num
+FROM customer_churn;
+
+
+SELECT customerid,
+monthlycharges,
+RANK() OVER(ORDER BY monthlycharges DESC) AS Rank_Num
+FROM customer_churn;
+
+
+SELECT customerid,
+tenure,
+LAG(tenure) OVER(ORDER BY tenure) AS Previous_Tenure
+FROM customer_churn;
+
+SELECT customerid,
+tenure,
+LEAD(tenure) OVER(ORDER BY tenure) AS Next_Tenure
+FROM customer_churn;
+
+
+SELECT
+    COUNT(*) AS total_customers,
+    SUM(CASE WHEN churn='Yes' THEN 1 ELSE 0 END) AS churned_customers,
+    ROUND(
+        100.0 * SUM(CASE WHEN churn='Yes' THEN 1 ELSE 0 END) / COUNT(*),
+        2
+    ) AS churn_rate
+FROM customer_churn;
+
+
+SELECT
+    contract,
+    ROUND(SUM(totalcharges),2) AS revenue
+FROM customer_churn
+GROUP BY contract
+ORDER BY revenue DESC;
+
+
+SELECT
+    internetservice,
+    ROUND(AVG(monthlycharges),2) AS avg_monthly_charge
+FROM customer_churn
+GROUP BY internetservice;
+
+
+
+SELECT
+    contract,
+    churn,
+    COUNT(*) AS customers
+FROM customer_churn
+GROUP BY contract, churn;
+
+
+SELECT
+    customerid,
+    monthlycharges
+FROM customer_churn
+ORDER BY monthlycharges DESC
+LIMIT 10;
+
+
+SELECT
+    ROUND(AVG(tenure),2) AS avg_tenure
+FROM customer_churn;
+
+
+SELECT
+    seniorcitizen,
+    COUNT(*) AS customers
+FROM customer_churn
+GROUP BY seniorcitizen;
+
+
+SELECT
+    paymentmethod,
+    COUNT(*) AS customers
+FROM customer_churn
+GROUP BY paymentmethod
+ORDER BY customers DESC;
+
+SELECT
+    paymentmethod,
+    churn,
+    COUNT(*) AS customers
+FROM customer_churn
+GROUP BY paymentmethod, churn;
+
+
+SELECT
+    contract,
+    ROUND(AVG(monthlycharges),2) AS average_charge
+FROM customer_churn
+GROUP BY contract;
+
+</sql><current_tab id="0"/></tab_sql></sqlb_project>
