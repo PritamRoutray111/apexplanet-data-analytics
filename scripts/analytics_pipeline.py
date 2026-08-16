@@ -126,6 +126,46 @@ print(f"Visualization saved to: {chart_path}")
 # PIPELINE COMPLETE
 # =========================
 
+# =========================
+# 9. EXPORT KPI RESULTS
+# =========================
+
+total_customers = len(df)
+
+churned_customers = (
+    df["churn"]
+    .value_counts()
+    .get("Yes", 0)
+)
+
+churn_rate = (churned_customers / total_customers) * 100
+
+average_monthly_charges = df["monthlycharges"].mean()
+average_tenure = df["tenure"].mean()
+
+kpi_results = pd.DataFrame({
+    "KPI": [
+        "Total Customers",
+        "Churned Customers",
+        "Churn Rate (%)",
+        "Average Monthly Charges",
+        "Average Tenure"
+    ],
+    "Value": [
+        total_customers,
+        churned_customers,
+        round(churn_rate, 2),
+        round(average_monthly_charges, 2),
+        round(average_tenure, 2)
+    ]
+})
+
+kpi_file = REPORTS_DIR / "analytics_results.csv"
+
+kpi_results.to_csv(kpi_file, index=False)
+
+print(f"KPI results exported to: {kpi_file}")
+
 print("\n================================")
 print("Analytics Pipeline Completed!")
 print("================================")
